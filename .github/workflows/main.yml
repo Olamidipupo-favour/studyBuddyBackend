@@ -20,7 +20,6 @@ jobs:
             - name: Build and push
               uses: docker/build-push-action@v6
               with:
-                context: "{{defaultContext}}:studyBuddyBackend"
                 push: true
                 tags: zeus1999/studybuddybackend:latest
             - name: Trigger deployment
