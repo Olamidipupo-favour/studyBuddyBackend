@@ -3,8 +3,8 @@ from controllers.users import UserController
 from controllers.health import HealthController
 from app import  create_app, api
 
-app = create_app()
-print("API object:", )
+create_app()
+print("API object:", api)
 print("API resources before:", api.resources)
 
 # Register routes
