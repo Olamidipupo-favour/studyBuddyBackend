@@ -1,6 +1,7 @@
-from flask_rest_api import Resource
+from flask_restful import Resource
 
 class HealthController(Resource):
     def get(self):
-        return {'message': 'Hello, World!'}
+        print("Health endpoint hit!")  # Debug print
+        return {'status': 'healthy'}
 

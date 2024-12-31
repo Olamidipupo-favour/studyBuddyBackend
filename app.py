@@ -1,4 +1,5 @@
 from flask import Flask
+from models.database import db
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
@@ -12,6 +13,7 @@ import os
 from asgiref.wsgi import WsgiToAsgi
 from gateways.websocket import socketio
 from flask_marshmallow import Marshmallow
+import routes
 
 # Initialize extensions
 db = SQLAlchemy()
@@ -20,8 +22,9 @@ jwt = JWTManager()
 mail = Mail()
 cors = CORS()
 celery = Celery()
-api = Api()
 ma = Marshmallow()
+global api
+api = Api()
 
 
 def create_app(config_name='default'):
@@ -47,8 +50,14 @@ def create_app(config_name='default'):
     # Initialize Redis
     app.redis = Redis.from_url(app.config['REDIS_URL'])
     
-    # Register blueprints
-    api.init_app(app)
+    # Add a test route
+    @app.route('/test')
+    def test():
+        return {'message': 'Test route working!'}
+    
+    # Initialize API
+    global api
+    api=Api(app) #export this app so it can be used in routes 
     
     return app
 
@@ -64,11 +73,12 @@ def create_celery_app(app=None):
     celery.Task = ContextTask
     return celery
 
+# Move app creation to top level
 app = create_app()
 
 # Convert WSGI app to ASGI
 asgi_app = WsgiToAsgi(app)
 
 if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run("app:asgi_app", host="0.0.0.0", port=5000, reload=True)
+    print("\n=== Starting Flask App ===")
+    app.run(debug=True)
