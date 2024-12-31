@@ -11,6 +11,7 @@ from flask_restful import Api
 import os
 from asgiref.wsgi import WsgiToAsgi
 import routes
+
 # Initialize extensions
 db = SQLAlchemy()
 migrate = Migrate()
