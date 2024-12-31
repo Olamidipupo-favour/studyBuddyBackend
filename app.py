@@ -32,7 +32,10 @@ def create_app(config_name='default'):
     
     # Initialize extensions with app
     db.init_app(app)
-    migrate.init_app(app, db)
+    # Initialize migrations after all models are imported
+    from models.user import User
+    from models.task import Task
+    migrate.init_app(app, db, directory='migrations')
     jwt.init_app(app)
     mail.init_app(app)
     cors.init_app(app)

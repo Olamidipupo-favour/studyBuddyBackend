@@ -23,4 +23,4 @@ jobs:
                 push: true
                 tags: zeus1999/studybuddybackend:latest
             - name: Trigger deployment
-              run: curl https://api.render.com/deploy/srv-cslun7hu0jms73b9b310?key=bF4pVt9Udz8
+              run: curl https://api.render.com/deploy/srv-ctpvf3l2ng1s73dvd3p0?key=YnHE01LuRrE
