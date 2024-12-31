@@ -1,5 +1,8 @@
 import os
 from datetime import timedelta
+import dotenv
+
+dotenv.load_dotenv()
 
 class Config:
     # Basic Flask config
@@ -8,10 +11,6 @@ class Config:
     FLASK_ENV = os.environ.get('FLASK_ENV', 'development')
 
     # Database config
-    database_url = os.environ.get('DATABASE_URL', 'sqlite:///app.db')
-    if database_url and database_url.startswith('postgres://'):
-        database_url = database_url.replace('postgres://', 'postgresql://', 1)
-    SQLALCHEMY_DATABASE_URI = database_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # JWT config
@@ -36,10 +35,15 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     DEVELOPMENT = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///dev.db'
 
 class ProductionConfig(Config):
     DEBUG = False
     DEVELOPMENT = False
+    database_url = os.environ.get('DATABASE_URL')
+    if database_url and database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    SQLALCHEMY_DATABASE_URI = database_url
 
 class TestingConfig(Config):
     TESTING = True

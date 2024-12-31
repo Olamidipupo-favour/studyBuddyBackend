@@ -1,6 +1,6 @@
-from flask_rest_api import Resource
+from flask_restful import Resource
 
 class UserController(Resource):
     def get(self):
-        return {'message': 'Hello, World!'}
+        return {'message': 'Users endpoint'}
 
