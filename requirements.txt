@@ -4,7 +4,6 @@ flask-migrate
 flask-jwt-extended
 flask-cors
 flask-restful
-flask-alembic
 flask-marshmallow
 flask-socketio
 marshmallow-sqlalchemy
