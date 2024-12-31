@@ -22,6 +22,6 @@ jobs:
               with:
                 context: "{{defaultContext}}:studyBuddyBackend"
                 push: true
-                tags: zeus1999/studyBuddyBackend:latest
+                tags: zeus1999/studybuddybackend:latest
             - name: Trigger deployment
               run: curl https://api.render.com/deploy/srv-cslun7hu0jms73b9b310?key=bF4pVt9Udz8
