@@ -1,27 +1,8 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_jwt_extended import JWTManager
-from flask_mail import Mail
-from flask_cors import CORS
-from celery import Celery
 from redis import Redis
 from config import config
-from flask_restful import Api
-import os
 from asgiref.wsgi import WsgiToAsgi
-import routes
-
-# Initialize extensions
-db = SQLAlchemy()
-migrate = Migrate()
-jwt = JWTManager()
-mail = Mail()
-cors = CORS()
-celery = Celery()
-global api
-api = Api()
-
+from extensions import db, migrate, jwt, mail, cors, celery, api, ma
 
 def create_app(config_name='default'):
     app = Flask(__name__)
@@ -35,6 +16,7 @@ def create_app(config_name='default'):
     jwt.init_app(app)
     mail.init_app(app)
     cors.init_app(app)
+    ma.init_app(app)
     
     # Initialize Celery
     celery.conf.update(app.config)
@@ -42,24 +24,17 @@ def create_app(config_name='default'):
     # Initialize Redis
     app.redis = Redis.from_url(app.config['REDIS_URL'])
     
-    # Register blueprints
-    global api
-    api=Api(app)
+    # Initialize API
+    api.init_app(app)
+    
+    # Import and register routes
+    with app.app_context():
+        from routes import register_routes
+        register_routes()
     
     return app
 
-def create_celery_app(app=None):
-    app = app or create_app()
-    celery.conf.update(app.config)
-    
-    class ContextTask(celery.Task):
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return self.run(*args, **kwargs)
-    
-    celery.Task = ContextTask
-    return celery
-
+# Create the Flask app
 app = create_app()
 
 # Convert WSGI app to ASGI
