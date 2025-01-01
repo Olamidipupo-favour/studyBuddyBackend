@@ -3,7 +3,7 @@ from redis import Redis
 from config import config
 from asgiref.wsgi import WsgiToAsgi
 from extensions import db, migrate, jwt, mail, cors, celery, api, ma
-
+import os
 def create_app(config_name='default'):
     app = Flask(__name__)
     
@@ -54,7 +54,7 @@ def create_app(config_name='default'):
 
 # Create the Flask app
 print("=== Creating Flask App ===")
-app = create_app()
+app = create_app(config_name=os.getenv('FLASK_ENV'))
 print("=== Flask App Created ===")
 
 # Convert WSGI app to ASGI
