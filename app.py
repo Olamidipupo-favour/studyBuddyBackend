@@ -27,15 +27,24 @@ def create_app(config_name='default'):
     # Initialize API
     api.init_app(app)
     
+    print("=== Before registering routes ===")
     # Import and register routes
     with app.app_context():
         from routes import register_routes
         register_routes()
+    print("=== After registering routes ===")
+    
+    # Print all registered routes
+    print("\n=== All Registered Routes ===")
+    for rule in app.url_map.iter_rules():
+        print(f"{rule.endpoint}: {rule.rule}")
     
     return app
 
 # Create the Flask app
+print("=== Creating Flask App ===")
 app = create_app()
+print("=== Flask App Created ===")
 
 # Convert WSGI app to ASGI
 asgi_app = WsgiToAsgi(app)
