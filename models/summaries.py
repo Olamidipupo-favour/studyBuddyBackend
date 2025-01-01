@@ -2,7 +2,7 @@ from models.base import *
 
 class Summary(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     source_type = db.Column(db.Enum('note', 'folder', 'all', name='source_types'), nullable=False)
     source_id = db.Column(db.String(36))  # Optional reference to Note or Folder
     content = db.Column(db.Text, nullable=False)
