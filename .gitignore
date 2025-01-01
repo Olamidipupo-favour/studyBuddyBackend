@@ -76,3 +76,6 @@ local_settings.py
 # Misc
 .pytest_cache/
 .mypy_cache/
+
+migrations/
+instance/
