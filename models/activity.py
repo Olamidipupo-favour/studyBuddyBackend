@@ -6,7 +6,7 @@ class UserActivity(db.Model):
     activity_type = db.Column(db.Enum('note_created', 'quiz_completed', 'summary_generated', 
                                     name='activity_types'), nullable=False)
     entity_id = db.Column(db.String(36), nullable=False)
-    metadata = db.Column(db.JSON)
+    activity_metadata = db.Column(db.JSON)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self):
@@ -15,6 +15,6 @@ class UserActivity(db.Model):
             'user_id': self.user_id,
             'activity_type': self.activity_type,
             'entity_id': self.entity_id,
-            'metadata': self.metadata,
+            'metadata': self.activity_metadata,
             'created_at': self.created_at.isoformat()
         } 
