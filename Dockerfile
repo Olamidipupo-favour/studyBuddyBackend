@@ -7,7 +7,8 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     FLASK_ENV=production \
-    DATABASE_URL=postgresql://neondb_owner:y85gResQXJtc@ep-lively-sun-a5i0suhp-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require
+    DATABASE_URL=postgresql://neondb_owner:y85gResQXJtc@ep-lively-sun-a5i0suhp-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require 
+    # use secrets later
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -27,6 +28,8 @@ RUN adduser --disabled-password --gecos '' appuser
 RUN chown -R appuser:appuser /app
 USER appuser
 
+RUN flask db init
+RUN flask db migrate
 RUN flask db upgrade
 EXPOSE 5000
 
