@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: fa8677d6fe37
+Revision ID: 87a908afc2c8
 Revises: 
-Create Date: 2025-01-01 13:05:34.621301
+Create Date: 2025-01-01 18:48:52.295873
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'fa8677d6fe37'
+revision = '87a908afc2c8'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -41,7 +41,7 @@ def upgrade():
     )
     op.create_table('folder',
     sa.Column('id', sa.String(length=36), nullable=False),
-    sa.Column('user_id', sa.String(length=36), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=255), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
@@ -53,7 +53,7 @@ def upgrade():
     )
     op.create_table('refresh_token',
     sa.Column('id', sa.String(length=36), nullable=False),
-    sa.Column('user_id', sa.String(length=36), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('token', sa.String(length=255), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('expires_at', sa.DateTime(), nullable=False),
@@ -64,7 +64,7 @@ def upgrade():
     )
     op.create_table('session',
     sa.Column('id', sa.String(length=36), nullable=False),
-    sa.Column('user_id', sa.String(length=36), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('token', sa.String(length=255), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('expires_at', sa.DateTime(), nullable=False),
@@ -75,7 +75,7 @@ def upgrade():
     )
     op.create_table('summary',
     sa.Column('id', sa.String(length=36), nullable=False),
-    sa.Column('user_id', sa.String(length=36), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('source_type', sa.Enum('note', 'folder', 'all', name='source_types'), nullable=False),
     sa.Column('source_id', sa.String(length=36), nullable=True),
     sa.Column('content', sa.Text(), nullable=False),
@@ -87,7 +87,7 @@ def upgrade():
     )
     op.create_table('user_activity',
     sa.Column('id', sa.String(length=36), nullable=False),
-    sa.Column('user_id', sa.String(length=36), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('activity_type', sa.Enum('note_created', 'quiz_completed', 'summary_generated', name='activity_types'), nullable=False),
     sa.Column('entity_id', sa.String(length=36), nullable=False),
     sa.Column('activity_metadata', sa.JSON(), nullable=True),
@@ -97,7 +97,7 @@ def upgrade():
     )
     op.create_table('note',
     sa.Column('id', sa.String(length=36), nullable=False),
-    sa.Column('user_id', sa.String(length=36), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('folder_id', sa.String(length=36), nullable=False),
     sa.Column('title', sa.String(length=255), nullable=False),
     sa.Column('content', sa.Text(), nullable=False),
@@ -113,7 +113,7 @@ def upgrade():
     )
     op.create_table('quiz',
     sa.Column('id', sa.String(length=36), nullable=False),
-    sa.Column('user_id', sa.String(length=36), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('note_id', sa.String(length=36), nullable=False),
     sa.Column('title', sa.String(length=255), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
@@ -124,7 +124,7 @@ def upgrade():
     )
     op.create_table('quiz_attempt',
     sa.Column('id', sa.String(length=36), nullable=False),
-    sa.Column('user_id', sa.String(length=36), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('quiz_id', sa.String(length=36), nullable=False),
     sa.Column('score', sa.Float(), nullable=False),
     sa.Column('time_spent', sa.Integer(), nullable=False),
