@@ -21,5 +21,8 @@ def register_routes():
     
     # Summaries routes
     api.add_resource(SummariesController, '/api/v1/summaries')
-    
+
+    # health check
+    api.add_resource(HealthController, '/api/v1/health')
+
     return api

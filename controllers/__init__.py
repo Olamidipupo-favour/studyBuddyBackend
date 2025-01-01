@@ -3,6 +3,7 @@ from .folders import FoldersController, FolderController
 from .quizzes import QuizzesController, QuizAttemptsController
 from .summaries import SummariesController
 from .auth import AuthController, RefreshController, SignupController
+from .health import HealthController
 
 
 __all__ = [
@@ -15,5 +16,6 @@ __all__ = [
     'SummariesController',
     'AuthController',
     'RefreshController',
-    'SignupController'
+    'SignupController',
+    'HealthController'
 ] 
