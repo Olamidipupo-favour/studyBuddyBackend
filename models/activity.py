@@ -2,7 +2,7 @@ from models.base import *
 
 class UserActivity(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     activity_type = db.Column(db.Enum('note_created', 'quiz_completed', 'summary_generated', 
                                     name='activity_types'), nullable=False)
     entity_id = db.Column(db.String(36), nullable=False)
