@@ -10,6 +10,12 @@ class Config:
     FLASK_APP = os.environ.get('FLASK_APP', 'app.py')
     FLASK_ENV = os.environ.get('FLASK_ENV', 'development')
 
+    # Cors config
+    CORS_ALLOW_CREDENTIALS = True
+    CORS_ALLOW_HEADERS = ['Content-Type', 'Authorization']
+    CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+    CORS_ALLOW_ORIGINS = ['http://localhost:3000', 'https://study-buddy-3yg9.vercel.app']
+
     # Database config
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

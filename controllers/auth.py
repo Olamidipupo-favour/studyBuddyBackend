@@ -8,43 +8,56 @@ from flask_jwt_extended import (
 )
 from datetime import datetime, timedelta
 from models import User, db
-from serializers import UserSchema
+from serializers import UserSchema, AuthSchema
 from .base import BaseController
+from marshmallow import ValidationError
 
 class AuthController(BaseController):
     def __init__(self):
         self.user_schema = UserSchema()
+        self.auth_schema = AuthSchema()
 
     def post(self):
         """Login endpoint"""
         try:
             # Validate login data
-            login_data = {
-                'email': request.json.get('email'),
-                'password': request.json.get('password')
-            }
-            
-            errors = self.user_schema.validate(login_data, partial=('name',))
-            if errors:
-                return {'message': 'Validation error', 'errors': errors}, 400
+            data = request.json
+            if not data or 'email' not in data or 'password' not in data:
+                return {
+                    'success': False,
+                    'message': 'Email and password are required'
+                }, 400
 
-            user = User.query.filter_by(email=login_data['email']).first()
-            if not user or not user.check_password(login_data['password']):
-                return {'message': 'Invalid credentials'}, 401
+            user = User.query.filter_by(email=data['email']).first()
+            if not user or not user.check_password(data['password']):
+                return {
+                    'success': False,
+                    'message': 'Invalid credentials'
+                }, 401
 
             # Create tokens
-            access_token = create_access_token(identity=user.id)
-            refresh_token = create_refresh_token(identity=user.id)
+            access_token = create_access_token(identity=user.uuid)
+            refresh_token = create_refresh_token(identity=user.uuid)
 
             return {
-                'access_token': access_token,
-                'refresh_token': refresh_token,
-                'token_type': 'Bearer',
-                'user': self.user_schema.dump(user)
+                'success': True,
+                'user': {
+                    'id': user.uuid,
+                    'name': user.name,
+                    'email': user.email,
+                    'role': user.role
+                },
+                'tokens': {
+                    'accessToken': access_token,
+                    'refreshToken': refresh_token
+                }
             }, 200
 
         except Exception as e:
-            return self.handle_error(e)
+            return {
+                'success': False,
+                'message': str(e)
+            }, 500
 
     @jwt_required()
     def delete(self):
@@ -61,8 +74,8 @@ class RefreshController(BaseController):
     def post(self):
         """Refresh token endpoint"""
         try:
-            current_user_id = get_jwt_identity()
-            access_token = create_access_token(identity=current_user_id)
+            current_user_uuid = get_jwt_identity()
+            access_token = create_access_token(identity=current_user_uuid)
 
             return {
                 'access_token': access_token,
@@ -70,4 +83,60 @@ class RefreshController(BaseController):
             }, 200
 
         except Exception as e:
-            return self.handle_error(e) 
+            return self.handle_error(e)
+
+class SignupController(BaseController):
+    def __init__(self):
+        self.user_schema = UserSchema()
+
+    def post(self):
+        """User registration endpoint"""
+        try:
+            data = request.json
+            
+            # Validate input
+            try:
+                validated_data = self.user_schema.load(data)
+            except ValidationError as err:
+                return {
+                    'success': False,
+                    'message': 'Validation error',
+                    'errors': err.messages
+                }, 400
+            
+            # Check if user already exists
+            if User.query.filter_by(email=validated_data['email']).first():
+                return {
+                    'success': False,
+                    'message': 'Email already exists'
+                }, 409
+            
+            # Create new user
+            user = User(
+                email=validated_data['email'],
+                name=validated_data['name'],
+                role=validated_data.get('role', 'user')  # Default to 'user'
+            )
+            user.set_password(validated_data['password'])
+            
+            # Save to database
+            db.session.add(user)
+            db.session.commit()
+            
+            # Return user data
+            return {
+                'success': True,
+                'user': {
+                    'id': user.uuid,
+                    'name': user.name,
+                    'email': user.email,
+                    'role': user.role,
+                    'createdAt': user.created_at.isoformat()
+                }
+            }, 201
+            
+        except Exception as e:
+            return {
+                'success': False,
+                'message': str(e)
+            }, 500 
