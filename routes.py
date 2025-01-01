@@ -4,5 +4,9 @@ from extensions import api
 
 def register_routes():
     print("=== Registering Routes ===")
-    api.add_resource(HealthController, '/api/v1/health')
-    api.add_resource(UserController, '/api/v1/users')
+    try:
+        api.add_resource(HealthController, '/api/v1/health')
+        api.add_resource(UserController, '/api/v1/users')
+        print("Routes registered successfully")
+    except Exception as e:
+        print(f"Error registering routes: {e}")

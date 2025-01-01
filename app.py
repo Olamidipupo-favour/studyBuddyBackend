@@ -24,15 +24,26 @@ def create_app(config_name='default'):
     # Initialize Redis
     app.redis = Redis.from_url(app.config['REDIS_URL'])
     
+    print("=== Before API init ===")
     # Initialize API
     api.init_app(app)
+    print("=== After API init ===")
     
     print("=== Before registering routes ===")
     # Import and register routes
     with app.app_context():
         from routes import register_routes
         register_routes()
+        
+        # Print API resources
+        print("\n=== API Resources ===")
+        print(api.resources)
     print("=== After registering routes ===")
+    
+    # Add a test route directly
+    @app.route('/test')
+    def test():
+        return {'message': 'Test route'}
     
     # Print all registered routes
     print("\n=== All Registered Routes ===")
