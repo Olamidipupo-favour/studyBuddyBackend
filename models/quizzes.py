@@ -21,7 +21,7 @@ class QuizQuestion(db.Model):
 
 class QuizAttempt(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     quiz_id = db.Column(db.String(36), db.ForeignKey('quiz.id'), nullable=False)
     score = db.Column(db.Float, nullable=False)
     time_spent = db.Column(db.Integer, nullable=False)  # minutes
