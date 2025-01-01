@@ -29,6 +29,11 @@ def create_app(config_name='default'):
     api.init_app(app)
     print("=== After API init ===")
     
+    # Add a root route
+    @app.route('/')
+    def index():
+        return {'message': 'Welcome to the API'}
+    
     print("=== Before registering routes ===")
     # Import and register routes
     with app.app_context():
@@ -38,6 +43,7 @@ def create_app(config_name='default'):
         # Print API resources
         print("\n=== API Resources ===")
         print(api.resources)
+    
     print("=== After registering routes ===")
     
     # Add a test route directly
