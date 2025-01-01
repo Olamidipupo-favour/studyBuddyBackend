@@ -4,8 +4,10 @@ FROM python:3.13-slim
 
 WORKDIR /app
 
-# ENV PYTHONDONTWRITEBYTECODE=1 \
-#     PYTHONUNBUFFERED=1 
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    FLASK_ENV=production \
+    DATABASE_URL=postgresql://neondb_owner:y85gResQXJtc@ep-lively-sun-a5i0suhp-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \

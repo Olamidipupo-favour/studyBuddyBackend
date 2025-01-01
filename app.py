@@ -58,7 +58,7 @@ def create_app(config_name='default'):
     return app
 
 
-app = create_app(config_name=os.getenv('FLASK_ENV','production'))
+app = create_app(config_name=os.getenv('FLASK_ENV','development'))
 
 # Convert WSGI app to ASGI
 asgi_app = WsgiToAsgi(app)
