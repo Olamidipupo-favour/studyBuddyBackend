@@ -28,10 +28,7 @@ RUN adduser --disabled-password --gecos '' appuser
 RUN chown -R appuser:appuser /app
 USER appuser
 
-RUN rm -rf migrations/ && \
-    flask db init && \
-    flask db migrate && \
-    flask db upgrade
+
 
 EXPOSE 5000
 

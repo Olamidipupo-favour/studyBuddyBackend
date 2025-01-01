@@ -5,7 +5,11 @@ from asgiref.wsgi import WsgiToAsgi
 from extensions import db, migrate, jwt, mail, cors, celery, api, ma
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
+import dotenv
 import os
+
+dotenv.load_dotenv()
+
 def create_app(config_name='default'):
     app = Flask(__name__)
     
@@ -57,12 +61,11 @@ def create_app(config_name='default'):
     
     return app
 
-
-app = create_app(config_name=os.getenv('FLASK_ENV','development'))
+app = create_app(config_name=os.environ.get('FLASK_ENV','development'))
 
 # Convert WSGI app to ASGI
 asgi_app = WsgiToAsgi(app)
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run("app:asgi_app", host="0.0.0.0", port=5000, reload=os.getenv('FLASK_ENV') == 'development')
+    uvicorn.run("app:asgi_app", host="0.0.0.0", port=5000, reload=os.getenv('FLASK_ENV') == 'development' or 'production')
