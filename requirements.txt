@@ -13,4 +13,4 @@ celery
 redis
 uvicorn
 asgiref
-psycopg2-binary
+pg8000
