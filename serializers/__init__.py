@@ -4,6 +4,7 @@ from .quizzes import QuizSchema, QuizQuestionSchema, QuizAttemptSchema, QuizAnsw
 from .summaries import SummarySchema
 from .auth import SessionSchema, RefreshTokenSchema
 from .activity import UserActivitySchema
+from .users import UserSchema
 
 __all__ = [
     'NoteSchema',
@@ -15,5 +16,6 @@ __all__ = [
     'SummarySchema',
     'SessionSchema',
     'RefreshTokenSchema',
-    'UserActivitySchema'
+    'UserActivitySchema',
+    'UserSchema'
 ] 
