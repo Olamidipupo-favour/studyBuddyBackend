@@ -25,6 +25,7 @@ RUN adduser --disabled-password --gecos '' appuser
 RUN chown -R appuser:appuser /app
 USER appuser
 
+RUN flask db upgrade
 EXPOSE 5000
 
 CMD ["python", "app.py"]
