@@ -5,3 +5,6 @@ class HealthController(Resource):
         print("Health endpoint hit!")  # Debug print
         return {'status': 'healthy'}
 
+    def options(self):
+        return {'status': 'ok'}, 200
+
