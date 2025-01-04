@@ -6,7 +6,7 @@ from models.quizzes import Quiz, QuizQuestion, QuizAttempt, QuizAnswer
 from models.summaries import Summary
 from models.auth import Session, RefreshToken
 from models.activity import UserActivity
-
+from models.subject import Subject
 __all__ = [
     'db',
     'User',
@@ -19,5 +19,6 @@ __all__ = [
     'Summary',
     'Session',
     'RefreshToken',
-    'UserActivity'
+    'UserActivity',
+    'Subject'
 ] 
