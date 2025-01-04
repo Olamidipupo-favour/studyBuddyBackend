@@ -2,10 +2,10 @@ from .notes import NotesController, NoteController
 from .folders import FoldersController, FolderController
 from .quizzes import QuizzesController, QuizAttemptsController
 from .summaries import SummariesController
-from .auth import AuthController, RefreshController, SignupController
+from .auth import AuthController, RefreshController, SignupController, TokenValidateResource
 from .health import HealthController
-
-
+from .subject import SubjectController, SubjectListResource
+from .folder import SubjectFolderListResource, SubjectFolderResource, FolderResourceUploadResource
 __all__ = [
     'NotesController',
     'NoteController',
@@ -17,5 +17,11 @@ __all__ = [
     'AuthController',
     'RefreshController',
     'SignupController',
-    'HealthController'
+    'HealthController',
+    'SubjectController',
+    'SubjectListResource',
+    'SubjectFolderListResource',
+    'SubjectFolderResource',
+    'FolderResourceUploadResource',
+    'TokenValidateResource'
 ] 
