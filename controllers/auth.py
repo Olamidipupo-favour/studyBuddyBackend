@@ -11,7 +11,9 @@ from models import User, db
 from serializers import UserSchema, AuthSchema
 from .base import BaseController
 from marshmallow import ValidationError
-
+from flask_restful import Resource
+from http import HTTPStatus
+from flask_jwt_extended import verify_jwt_in_request
 class AuthController(BaseController):
     def __init__(self):
         self.user_schema = UserSchema()
@@ -84,7 +86,29 @@ class RefreshController(BaseController):
 
         except Exception as e:
             return self.handle_error(e)
-
+class TokenValidateResource(Resource):
+    def get(self):
+        """Validate the current token"""
+        try:
+            verify_jwt_in_request()
+            jwt = get_jwt()
+            
+            if jwt.get("type") != "access":
+                return {
+                    "message": "Invalid token type",
+                    "valid": False
+                }, HTTPStatus.UNAUTHORIZED
+                
+            return {
+                "message": "Token is valid",
+                "valid": True
+            }, HTTPStatus.OK
+            
+        except Exception as e:
+            return {
+                "message": "Invalid or expired token",
+                "valid": False
+            }, HTTPStatus.UNAUTHORIZED
 class SignupController(BaseController):
     def __init__(self):
         self.user_schema = UserSchema()

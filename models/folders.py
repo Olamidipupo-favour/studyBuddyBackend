@@ -1,28 +1,33 @@
-from models.base import *
+from extensions import db
+from datetime import datetime
+from uuid import uuid4
+from sqlalchemy.orm import relationship
+from enum import Enum
+
+class FolderType(Enum):
+    NOTES = 'Notes'
+    PDF = 'PDF'
+    DOC = 'DOC'
+    VIDEO = 'Video'
 
 class Folder(db.Model):
-    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    """Folder model for organizing content within subjects"""
+    __tablename__ = "folder"
+
+    id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid4()))
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # Summary features
-    folder_summary = db.Column(db.Text)
-    last_summarized_at = db.Column(db.DateTime)
-    
-    # Relationships
-    notes = db.relationship('Note', backref='folder', lazy=True)
+    type = db.Column(db.String(50), nullable=True, default='Notes')  # e.g., 'pdf', 'doc', 'video'
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'user_id': self.user_id,
-            'name': self.name,
-            'description': self.description,
-            'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat(),
-            'folder_summary': self.folder_summary,
-            'last_summarized_at': self.last_summarized_at.isoformat() if self.last_summarized_at else None
-        } 
+    # Foreign key to Subject
+    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id', ondelete='CASCADE'), nullable=False)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    
+
+
+    def __repr__(self):
+        return f"<Folder {self.name}>" 
