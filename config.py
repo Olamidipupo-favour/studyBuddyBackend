@@ -21,7 +21,7 @@ class Config:
 
     # JWT config
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-key'
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=5)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 
     # Redis config

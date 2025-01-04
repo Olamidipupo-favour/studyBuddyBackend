@@ -3,7 +3,8 @@ from models.base import *
 class Note(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    folder_id = db.Column(db.String(36), db.ForeignKey('folder.id'), nullable=False)
+    #folder_id = db.Column(db.String(36), db.ForeignKey('folder.uuid'), nullable=False)
+    folder_id = db.Column(db.Integer, db.ForeignKey('folder.id', ondelete='CASCADE'), nullable=False)
     title = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

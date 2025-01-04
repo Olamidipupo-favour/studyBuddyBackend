@@ -18,10 +18,10 @@ class User(db.Model):
     total_quizzes_taken = db.Column(db.Integer, default=0)
     average_quiz_score = db.Column(db.Float, default=0.0)
     # Relationships
-    notes = db.relationship('Note', backref='user', lazy=True)
-    folders = db.relationship('Folder', backref='user', lazy=True)
-    sessions = db.relationship('Session', backref='user', lazy=True)
-    refresh_tokens = db.relationship('RefreshToken', backref='user', lazy=True)
+    # notes = db.relationship('Note', backref='user', lazy=True)
+    # #folders = db.relationship('Folder', backref='user', lazy=True)
+    # sessions = db.relationship('Session', backref='user', lazy=True)
+    # refresh_tokens = db.relationship('RefreshToken', backref='user', lazy=True)
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
