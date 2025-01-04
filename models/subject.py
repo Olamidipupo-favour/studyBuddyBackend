@@ -2,32 +2,27 @@ from extensions import db
 from datetime import datetime
 from uuid import uuid4
 from sqlalchemy.orm import relationship
-from enum import Enum
 
-class FolderType(Enum):
-    NOTES = 'Notes'
-    PDF = 'PDF'
-    DOC = 'DOC'
-    VIDEO = 'Video'
-
-class Folder(db.Model):
-    """Folder model for organizing content within subjects"""
-    __tablename__ = "folder"
+class Subject(db.Model):
+    """Subject model for storing subject related details"""
+    __tablename__ = "subject"
 
     id = db.Column(db.Integer, primary_key=True)
     uuid = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid4()))
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
-    type = db.Column(db.String(50), nullable=True, default='Notes')  # e.g., 'pdf', 'doc', 'video'
-
-    # Foreign key to Subject
-    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id', ondelete='CASCADE'), nullable=False)
+    
+    # Metrics
+    total_topics = db.Column(db.Integer, default=0)
+    total_questions = db.Column(db.Integer, default=0)
+    progress = db.Column(db.Float, default=0.0)
     
     # Timestamps
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     
-
+    # Relationships
+    user_id = db.Column(db.String(36), db.ForeignKey('user.uuid'), nullable=False)
 
     def __repr__(self):
-        return f"<Folder {self.name}>" 
+        return f"<Subject {self.name}>" 

@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 87a908afc2c8
+Revision ID: 73a179bf2f7e
 Revises: 
-Create Date: 2025-01-01 18:48:52.295873
+Create Date: 2025-01-04 14:10:46.511027
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '87a908afc2c8'
+revision = '73a179bf2f7e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,7 +23,7 @@ def upgrade():
     sa.Column('uuid', sa.String(length=36), nullable=False),
     sa.Column('name', sa.String(length=120), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
-    sa.Column('password_hash', sa.String(length=128), nullable=True),
+    sa.Column('password_hash', sa.String(length=512), nullable=True),
     sa.Column('role', sa.Enum('user', 'admin', name='user_roles'), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
@@ -38,18 +38,6 @@ def upgrade():
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('name'),
     sa.UniqueConstraint('uuid')
-    )
-    op.create_table('folder',
-    sa.Column('id', sa.String(length=36), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=255), nullable=False),
-    sa.Column('description', sa.Text(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('folder_summary', sa.Text(), nullable=True),
-    sa.Column('last_summarized_at', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('refresh_token',
     sa.Column('id', sa.String(length=36), nullable=False),
@@ -73,6 +61,20 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('token')
     )
+    op.create_table('subject',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('uuid', sa.String(length=36), nullable=False),
+    sa.Column('name', sa.String(length=255), nullable=False),
+    sa.Column('description', sa.Text(), nullable=True),
+    sa.Column('total_topics', sa.Integer(), nullable=True),
+    sa.Column('total_questions', sa.Integer(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('user_id', sa.String(length=36), nullable=False),
+    sa.ForeignKeyConstraint(['user_id'], ['user.uuid'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('uuid')
+    )
     op.create_table('summary',
     sa.Column('id', sa.String(length=36), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
@@ -95,10 +97,22 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('folder',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('uuid', sa.String(length=36), nullable=False),
+    sa.Column('name', sa.String(length=255), nullable=False),
+    sa.Column('description', sa.Text(), nullable=True),
+    sa.Column('subject_id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.ForeignKeyConstraint(['subject_id'], ['subject.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('uuid')
+    )
     op.create_table('note',
     sa.Column('id', sa.String(length=36), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('folder_id', sa.String(length=36), nullable=False),
+    sa.Column('folder_id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=255), nullable=False),
     sa.Column('content', sa.Text(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
@@ -163,10 +177,11 @@ def downgrade():
     op.drop_table('quiz_attempt')
     op.drop_table('quiz')
     op.drop_table('note')
+    op.drop_table('folder')
     op.drop_table('user_activity')
     op.drop_table('summary')
+    op.drop_table('subject')
     op.drop_table('session')
     op.drop_table('refresh_token')
-    op.drop_table('folder')
     op.drop_table('user')
     # ### end Alembic commands ###
