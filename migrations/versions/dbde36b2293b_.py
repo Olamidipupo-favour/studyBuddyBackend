@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 73a179bf2f7e
+Revision ID: dbde36b2293b
 Revises: 
-Create Date: 2025-01-04 14:10:46.511027
+Create Date: 2025-01-05 09:22:40.202128
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '73a179bf2f7e'
+revision = 'dbde36b2293b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -68,6 +68,7 @@ def upgrade():
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('total_topics', sa.Integer(), nullable=True),
     sa.Column('total_questions', sa.Integer(), nullable=True),
+    sa.Column('progress', sa.Float(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.Column('user_id', sa.String(length=36), nullable=False),
@@ -102,10 +103,43 @@ def upgrade():
     sa.Column('uuid', sa.String(length=36), nullable=False),
     sa.Column('name', sa.String(length=255), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
+    sa.Column('type', sa.Enum('NOTES', 'REFERENCES', 'PAST_QUESTIONS', name='foldertype'), nullable=True),
     sa.Column('subject_id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['subject_id'], ['subject.id'], ),
+    sa.ForeignKeyConstraint(['subject_id'], ['subject.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('uuid')
+    )
+    op.create_table('study_session',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('uuid', sa.String(length=36), nullable=False),
+    sa.Column('user_id', sa.String(length=36), nullable=False),
+    sa.Column('subject_id', sa.String(length=36), nullable=False),
+    sa.Column('start_time', sa.DateTime(), nullable=False),
+    sa.Column('end_time', sa.DateTime(), nullable=True),
+    sa.Column('status', sa.String(length=20), nullable=False),
+    sa.Column('total_duration', sa.Integer(), nullable=True),
+    sa.Column('focus_score', sa.Float(), nullable=True),
+    sa.Column('productivity_score', sa.Float(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.ForeignKeyConstraint(['subject_id'], ['subject.uuid'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['user_id'], ['user.uuid'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('uuid')
+    )
+    op.create_table('item',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('uuid', sa.String(length=36), nullable=False),
+    sa.Column('name', sa.String(length=255), nullable=False),
+    sa.Column('description', sa.Text(), nullable=True),
+    sa.Column('type', sa.Enum('PDF', 'DOC', 'VIDEO', name='itemtype'), nullable=False),
+    sa.Column('url', sa.String(length=512), nullable=True),
+    sa.Column('folder_id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.ForeignKeyConstraint(['folder_id'], ['folder.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('uuid')
     )
@@ -121,9 +155,22 @@ def upgrade():
     sa.Column('last_summarized_at', sa.DateTime(), nullable=True),
     sa.Column('tags', sa.JSON(), nullable=True),
     sa.Column('is_archived', sa.Boolean(), nullable=True),
-    sa.ForeignKeyConstraint(['folder_id'], ['folder.id'], ),
+    sa.ForeignKeyConstraint(['folder_id'], ['folder.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('study_break',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('uuid', sa.String(length=36), nullable=False),
+    sa.Column('session_id', sa.Integer(), nullable=False),
+    sa.Column('start_time', sa.DateTime(), nullable=False),
+    sa.Column('end_time', sa.DateTime(), nullable=True),
+    sa.Column('duration', sa.Integer(), nullable=True),
+    sa.Column('break_type', sa.String(length=50), nullable=True),
+    sa.Column('reason', sa.String(length=255), nullable=True),
+    sa.ForeignKeyConstraint(['session_id'], ['study_session.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('uuid')
     )
     op.create_table('quiz',
     sa.Column('id', sa.String(length=36), nullable=False),
@@ -135,6 +182,23 @@ def upgrade():
     sa.ForeignKeyConstraint(['note_id'], ['note.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('study_session_item',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('uuid', sa.String(length=36), nullable=False),
+    sa.Column('session_id', sa.Integer(), nullable=False),
+    sa.Column('item_id', sa.String(length=36), nullable=False),
+    sa.Column('start_time', sa.DateTime(), nullable=False),
+    sa.Column('end_time', sa.DateTime(), nullable=True),
+    sa.Column('duration', sa.Integer(), nullable=True),
+    sa.Column('completion_status', sa.Float(), nullable=True),
+    sa.Column('difficulty_rating', sa.Integer(), nullable=True),
+    sa.Column('confidence_rating', sa.Integer(), nullable=True),
+    sa.Column('notes', sa.Text(), nullable=True),
+    sa.ForeignKeyConstraint(['item_id'], ['item.uuid'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['session_id'], ['study_session.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('uuid')
     )
     op.create_table('quiz_attempt',
     sa.Column('id', sa.String(length=36), nullable=False),
@@ -175,8 +239,12 @@ def downgrade():
     op.drop_table('quiz_answer')
     op.drop_table('quiz_question')
     op.drop_table('quiz_attempt')
+    op.drop_table('study_session_item')
     op.drop_table('quiz')
+    op.drop_table('study_break')
     op.drop_table('note')
+    op.drop_table('item')
+    op.drop_table('study_session')
     op.drop_table('folder')
     op.drop_table('user_activity')
     op.drop_table('summary')

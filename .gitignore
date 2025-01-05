@@ -21,6 +21,7 @@ wheels/
 *.egg
 
 # Virtual Environment
+studyBuddy/
 venv/
 env/
 ENV/
@@ -76,4 +77,8 @@ local_settings.py
 # Misc
 .pytest_cache/
 .mypy_cache/
+
+# Uploads
+uploads/
+
 

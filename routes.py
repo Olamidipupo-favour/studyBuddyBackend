@@ -31,6 +31,11 @@ def register_routes():
     api.add_resource(SubjectFolderListResource, '/api/v1/subjects/<string:subject_uuid>/folders')
     api.add_resource(SubjectFolderResource, '/api/v1/subjects/<string:subject_uuid>/folders/<string:folder_uuid>')
     api.add_resource(FolderResourceUploadResource, '/api/v1/subjects/<string:subject_uuid>/folders/<string:folder_uuid>/upload')
+    api.add_resource(FolderResourceDeleteResource, '/api/v1/subjects/<string:subject_uuid>/folders/<string:folder_uuid>/resources/<string:resource_uuid>')
+
+    #history
+    api.add_resource(StudySessionHistoryResource, '/api/v1/subjects/<string:subject_uuid>/study-sessions')
+
     # health check
     api.add_resource(HealthController, '/api/v1/health')
 
