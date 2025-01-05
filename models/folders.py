@@ -6,9 +6,8 @@ from enum import Enum
 
 class FolderType(Enum):
     NOTES = 'Notes'
-    PDF = 'PDF'
-    DOC = 'DOC'
-    VIDEO = 'Video'
+    REFERENCES = 'References'
+    PAST_QUESTIONS = 'Past Questions'
 
 class Folder(db.Model):
     """Folder model for organizing content within subjects"""
@@ -18,7 +17,7 @@ class Folder(db.Model):
     uuid = db.Column(db.String(36), unique=True, nullable=False, default=lambda: str(uuid4()))
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
-    type = db.Column(db.String(50), nullable=True, default='Notes')  # e.g., 'pdf', 'doc', 'video'
+    type = db.Column(db.Enum(FolderType), nullable=True, default=FolderType.NOTES)  # e.g., 'pdf', 'doc', 'video'
 
     # Foreign key to Subject
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id', ondelete='CASCADE'), nullable=False)

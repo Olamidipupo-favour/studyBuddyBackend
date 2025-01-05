@@ -12,9 +12,9 @@ class Config:
 
     # Cors config
     CORS_ALLOW_CREDENTIALS = True
-    CORS_ALLOW_HEADERS = ['Content-Type', 'Authorization']
-    CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-    CORS_ALLOW_ORIGINS = ['http://localhost:3000', 'https://study-buddy-3yg9.vercel.app']
+    CORS_ALLOW_HEADERS = ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods', 'Access-Control-Allow-Credentials']
+    CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
+    CORS_ALLOW_ORIGINS = ['http://localhost:3000', 'https://study-buddy-3yg9.vercel.app', 'http://localhost:5000']
 
     # Database config
     SQLALCHEMY_TRACK_MODIFICATIONS = False
