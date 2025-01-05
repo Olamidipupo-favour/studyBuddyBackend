@@ -14,6 +14,9 @@ from marshmallow import ValidationError
 from flask_restful import Resource
 from http import HTTPStatus
 from flask_jwt_extended import verify_jwt_in_request
+from utils.auth_utils import auth_required
+from flask import current_app as app
+
 class AuthController(BaseController):
     def __init__(self):
         self.user_schema = UserSchema()
@@ -86,6 +89,7 @@ class RefreshController(BaseController):
 
         except Exception as e:
             return self.handle_error(e)
+
 class TokenValidateResource(Resource):
     def get(self):
         """Validate the current token"""
@@ -109,6 +113,7 @@ class TokenValidateResource(Resource):
                 "message": "Invalid or expired token",
                 "valid": False
             }, HTTPStatus.UNAUTHORIZED
+
 class SignupController(BaseController):
     def __init__(self):
         self.user_schema = UserSchema()
@@ -163,4 +168,14 @@ class SignupController(BaseController):
             return {
                 'success': False,
                 'message': str(e)
-            }, 500 
+            }, 500
+
+class TokenTestResource(Resource):
+    @auth_required
+    def get(self):
+        """Test endpoint for token validation"""
+        jwt = get_jwt()
+        return {
+            "message": "Token is valid",
+            "token_data": jwt if app.debug else None
+        }, HTTPStatus.OK

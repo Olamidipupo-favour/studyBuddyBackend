@@ -4,8 +4,8 @@ from .quizzes import QuizzesController, QuizAttemptsController
 from .summaries import SummariesController
 from .auth import AuthController, RefreshController, SignupController, TokenValidateResource
 from .health import HealthController
-from .subject import SubjectController, SubjectListResource
-from .folder import SubjectFolderListResource, SubjectFolderResource, FolderResourceUploadResource
+from .subject import SubjectController, SubjectListResource, StudySessionHistoryResource
+from .folder import SubjectFolderListResource, SubjectFolderResource, FolderResourceUploadResource, FolderResourceDeleteResource
 __all__ = [
     'NotesController',
     'NoteController',
@@ -23,5 +23,7 @@ __all__ = [
     'SubjectFolderListResource',
     'SubjectFolderResource',
     'FolderResourceUploadResource',
-    'TokenValidateResource'
+    'TokenValidateResource',
+    'FolderResourceDeleteResource',
+    'StudySessionHistoryResource'
 ] 
