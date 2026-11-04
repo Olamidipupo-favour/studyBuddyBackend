@@ -15,12 +15,12 @@ jobs:
             - name: Login to Docker Hub
               uses: docker/login-action@v3
               with:
-                username: zeus1999 # ${{ secrets.DOCKERHUB_USERNAME }}
-                password: ***REMOVED*** # ${{ secrets.DOCKERHUB_TOKEN }}
+                username: ${{ secrets.DOCKERHUB_USERNAME }}
+                password: ${{ secrets.DOCKERHUB_TOKEN }}
             - name: Build and push
               uses: docker/build-push-action@v6
               with:
                 push: true
                 tags: zeus1999/studybuddybackend:latest
             - name: Trigger deployment
-              run: curl https://api.render.com/deploy/srv-ctpvf3l2ng1s73dvd3p0?key=***REMOVED***
+              run: curl "${{ secrets.RENDER_DEPLOY_HOOK }}"
