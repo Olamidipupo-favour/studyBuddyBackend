@@ -6,9 +6,8 @@ WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    FLASK_ENV=production \
-    DATABASE_URL=***REMOVED*** 
-    # use secrets later
+    FLASK_ENV=production
+# DATABASE_URL is supplied by the deployment environment
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
